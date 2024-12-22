@@ -21,6 +21,7 @@ def scan_network(network, port):
 def main():
     network = input("Enter the network range (e.g., 192.168.1.0/24): ")
     port = int(input("Enter a port number (e.g., 22, 80, 443): "))
+    output_file = "scan_results.txt"
     
     try:
         ipaddress.IPv4Network(network)  # Validate the network range
@@ -31,12 +32,18 @@ def main():
     print(f"Scanning network {network} for open port {port}...")
     open_hosts = scan_network(network, port)
     
-    if open_hosts:
-        print(f"Devices with port {port} open:")
-        for host in open_hosts:
-            print(host)
-    else:
-        print(f"No devices with port {port} open found on the network {network}.")
+    with open(output_file, 'w') as f:
+        if open_hosts:
+            print(f"Devices with port {port} open:")
+            #f.write(f"Devices with port {port} open:\n")
+            for host in open_hosts:
+                print(host)
+                f.write(f"{host}\n")
+        else:
+            print(f"No devices with port {port} open found on the network {network}.")
+            f.write(f"No devices with port {port} open found on the network {network}.\n")
+    
+    print(f"Results written to {output_file}")
 
 if __name__ == "__main__":
     main()
